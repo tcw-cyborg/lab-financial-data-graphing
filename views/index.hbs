@@ -8,7 +8,15 @@
     <p>Welcome to {{title}} </p>
   </body>
 
-  <canvas id="my-chart"></canvas>
+
+  <input id="start" type="date" value="2021-04-21"></input>
+  <input id="end" type="date" value="2021-05-21"></input>
+  <select name="currency" id="currency" >
+    <option value="USD">USD</option>
+    <option value="EUR">EUR</option>
+  </select>
+
+  <canvas id="my-chart" width="500" height="auto"></canvas>
 
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 

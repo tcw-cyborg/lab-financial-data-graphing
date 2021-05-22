@@ -1,35 +1,47 @@
-axios({
-  method: "GET",
-  url: "http://api.coindesk.com/v1/bpi/historical/close.json",
-})
-  .then((response) => {
-    console.log(response.data);
-    printTheChart(response.data);
-  })
-  .catch((err) => {
-    console.log("oops", err);
-  });
+const start = document.getElementById("start");
+const end = document.getElementById("end");
+const currency = document.getElementById("currency");
 
-  function printTheChart(stockData) {
-    console.log("hello");
-    const dailyData = stockData['bpi'];
-   
-    const stockDates = Object.keys(dailyData);
-    const stockPrices = stockDates.map(date => dailyData[date]['4. close']);
-   
-    const ctx = document.getElementById('my-chart').getContext('2d');
-    const chart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: stockDates,
-        datasets: [
-          {
-            label: 'Stock Chart',
-            backgroundColor: 'rgb(255, 99, 132)',
-            borderColor: 'rgb(255, 99, 132)',
-            data: stockPrices
-          }
-        ]
-      }
-    }); // closes chart = new Chart()
-  } // closes printTheChart()
+console.log(currency);
+
+start.addEventListener("change", printTheChart);
+end.addEventListener("change", printTheChart);
+currency.addEventListener("change", printTheChart);
+
+// console.log(start);
+
+function printTheChart() {
+  const startData = start.value;
+  const endData = end.value;
+  const currencyData = currency.value;
+  console.log(currencyData);
+  axios.get(`http://api.coindesk.com/v1/bpi/historical/close.json?start=${startData}&end=${endData}&currency=${currencyData}`)
+    .then((response) => {
+      console.log(response.data);
+      const stockDates = Object.keys(response.data.bpi);
+      const stockPrices = stockDates.map((date) => response.data.bpi[date]);
+      console.log(stockPrices);
+
+      const ctx = document.getElementById("my-chart").getContext("2d");
+      const chart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: stockDates,
+          datasets: [
+            {
+              label: "Bitcoin Price Index",
+              backgroundColor: "rgb(255, 99, 132)",
+              borderColor: "rgb(255, 99, 132)",
+              data: stockPrices,
+            },
+          ],
+        },
+      });
+    })
+    .catch((err) => {
+      console.log("oops", err);
+    });
+
+} // closes printTheChart()
+
+printTheChart();
